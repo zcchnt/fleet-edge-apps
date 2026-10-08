@@ -34,15 +34,16 @@ jobs:
           
           python3 -c '
           import re
+          sha = ${{github.sha}}[0,4]
           with open("nginx-log-creator/deployment.yaml", "r") as f:
               content = f.read()
           # Sostituisce la riga dell immagine con il nuovo SHA
-          new_content = re.sub(r"image: ghcr\.io/.*?/.*", "image: ghcr.io/zcchnt/fleet-edge-apps:${{ github.sha }}", content)
+          new_content = re.sub(r"image: ghcr\.io/.*?/.*", "image: ghcr.io/zcchnt/fleet-edge-apps:"+sha, content)
           with open("nginx-log-creator/deployment.yaml", "w") as f:
               f.write(new_content)
           '
           
-          git commit -am "Aggiorna immagine a ${{ github.sha }}"
+          git commit -am "Aggiorna immagine a "+ sha
           git push
 
 
