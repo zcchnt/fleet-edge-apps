@@ -27,16 +27,21 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Aggiorna il file deployment.yaml con il nuovo SHA
+      - name: Aggiorna il file deployment.yaml
         run: |
-          # Configura l'identità Git del bot di GitHub Actions
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           
-          # Sostituisce il tag nel file deployment.yaml con lo SHA corrente del commit
-          sed -i 's|image: ghcr.io/zcchnt/fleet-edge-apps:.*|image: ghcr.io/zcchnt/fleet-edge-apps:${{ github.sha }}|g'/nginx-log-creator/deployment.yaml
+          python3 -c '
+          import re
+          with open("/nginx-log-creator/deployment.yaml", "r") as f:
+              content = f.read()
+          # Sostituisce la riga dell immagine con il nuovo SHA
+          new_content = re.sub(r"image: ghcr\.io/.*?/.*", "image: ghcr.io/zcchnt/fleet-edge-apps:${{ github.sha }}", content)
+          with open("/nginx-log-creator/deployment.yaml", "w") as f:
+              f.write(new_content)
+          '
           
-          # Registra la modifica, fa il commit e il push sul ramo main
           git commit -am "Aggiorna immagine a ${{ github.sha }}"
           git push
 
