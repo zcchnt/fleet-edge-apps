@@ -23,7 +23,7 @@ alloy:
         
         rule {
           target_label = "cluster"
-          replacement  = "{{ dig \"global\" \"fleet\" \"clusterName\" \"cluster-sconosciuto\" .Values }}"
+          replacement  = "{{ dig "global" "fleet" "clusterName" "cluster-sconosciuto" .Values }}"
         }
         
         rule {
