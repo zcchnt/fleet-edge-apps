@@ -1,5 +1,5 @@
 name: Compila e Pubblica su GHCR
-s
+
 on:
   push:
     branches:
