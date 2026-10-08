@@ -23,7 +23,7 @@ alloy:
         
         rule {
           target_label = "cluster"
-          replacement  = "{{ if .Values.global }}{{ if .Values.global.fleet }}{{ .Values.global.fleet.clusterName }}{{ else }}cluster-sconosciuto{{ end }}{{ else }}cluster-sconosciuto{{ end }}"
+          replacement  = "edge-poc"
         }
         
         rule {
