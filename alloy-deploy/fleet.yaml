@@ -1,0 +1,17 @@
+defaultNamespace: default
+
+helm:
+  # Dico a Fleet dove trovare l'applicazione ufficiale
+  repo: https://grafana.github.io/helm-charts
+  chart: alloy
+  
+  # Dico a Fleet di usare le nostre impostazioni
+  valuesFiles:
+    - values.yaml
+
+# Dico a Fleet dove installare questo pacchetto
+targetCustomizations:
+  - name: tutti-gli-edge
+    clusterSelector:
+      matchLabels:
+        type: edge # Installerà Alloy su tutti i cluster con questa etichetta

@@ -1,0 +1,46 @@
+controller:
+  type: daemonset
+
+alloy:
+  configMap:
+    content: |-
+      loki.write "default" {
+        endpoint {
+          url = "http://loki.192.168.1.160.nip.io/loki/api/v1/push"
+        }
+        wal {
+          enabled = true
+          max_segment_age = "24h"
+        }
+      }
+
+      discovery.kubernetes "pods" {
+        role = "pod"
+      }
+
+      discovery.relabel "pod_logs" {
+        targets = discovery.kubernetes.pods.targets
+        
+        rule {
+          target_label = "cluster"
+          replacement  = "edge-milano"
+        }
+        
+        rule {
+          source_labels = ["__meta_kubernetes_namespace"]
+          target_label  = "namespace"
+        }
+        rule {
+          source_labels = ["__meta_kubernetes_pod_name"]
+          target_label  = "pod"
+        }
+        rule {
+          source_labels = ["__meta_kubernetes_pod_container_name"]
+          target_label  = "container"
+        }
+      }
+
+      loki.source.kubernetes "local_pods" {
+        targets    = discovery.relabel.pod_logs.output
+        forward_to = [loki.write.default.receiver]
+      }
