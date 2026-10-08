@@ -15,8 +15,3 @@ targetCustomizations:
     clusterSelector:
       matchLabels:
         type: edge # Installerà Alloy su tutti i cluster edge
-
-  - name: master
-    clusterSelector:
-      matchLabels:
-        type: master # Installerà Alloy su tutti i cluster master
