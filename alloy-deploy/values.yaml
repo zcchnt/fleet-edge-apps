@@ -1,3 +1,8 @@
+# Questo serve solo a non far crashare Helm durante i test a vuoto
+global:
+  fleet:
+    clusterName: "in-attesa-di-fleet"
+
 controller:
   type: daemonset
 
@@ -23,7 +28,7 @@ alloy:
         
         rule {
           target_label = "cluster"
-          replacement  = "{{ $.Values.global.fleet.clusterName }}"
+          replacement  = "{{ .Values.global.fleet.clusterName }}"
         }
         
         rule {
