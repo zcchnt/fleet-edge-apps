@@ -34,7 +34,7 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           
           # Sostituisce il tag nel file deployment.yaml con lo SHA corrente del commit
-          sed -i 's|image: ghcr.io/zcchnt/fleet-edge-apps:.*|image: ghcr.io/zcchnt/fleet-edge-apps:${{ github.sha }}|g' /nginx-log-creator/deployment.yaml
+          sed -i 's|image: ghcr.io/zcchnt/fleet-edge-apps:.*|image: ghcr.io/zcchnt/fleet-edge-apps:${{ github.sha }}|g'/nginx-log-creator/deployment.yaml
           
           # Registra la modifica, fa il commit e il push sul ramo main
           git commit -am "Aggiorna immagine a ${{ github.sha }}"
