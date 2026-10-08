@@ -11,7 +11,12 @@ helm:
 
 # Dico a Fleet dove installare questo pacchetto
 targetCustomizations:
-  - name: tutti-gli-edge
+  - name: edge
     clusterSelector:
       matchLabels:
-        type: edge # Installerà Alloy su tutti i cluster con questa etichetta
+        type: edge # Installerà Alloy su tutti i cluster edge
+
+  - name: master
+    clusterSelector:
+      matchLabels:
+        type: master # Installerà Alloy su tutti i cluster master

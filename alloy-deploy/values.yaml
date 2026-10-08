@@ -23,7 +23,7 @@ alloy:
         
         rule {
           target_label = "cluster"
-          replacement  = "edge-milano"
+          replacement  = "{{ .Values.global.fleet.clusterName }}"
         }
         
         rule {
