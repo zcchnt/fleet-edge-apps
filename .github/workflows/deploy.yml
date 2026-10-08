@@ -27,11 +27,6 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Converti repository in minuscolo
-        id: string_case
-        uses: inner-telecom/uppercase-action@v1 
-        with:
-          string: ${{ github.repository }}
 
       - name: Build e Push dell'immagine
         uses: docker/build-push-action@v5
