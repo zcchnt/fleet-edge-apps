@@ -1,0 +1,18 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-log-creator
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: log-creator
+  template:
+    metadata:
+      labels:
+        app: log-creator
+    spec:
+      containers:
+      - name: log-creator
+        image: ghcr.io/zcchnt/fleet-edge-apps:latest
