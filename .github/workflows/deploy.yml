@@ -27,28 +27,29 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Estrai i primi 7 caratteri dello SHA
+        id: vars
+        run: echo "SHORT_SHA=$(echo ${{ github.sha }} | cut -c1-7)" >> $GITHUB_OUTPUT
+
       - name: Aggiorna il file deployment.yaml
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          
-          # Estrae solo i primi 7 caratteri dello SHA
-          SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
-          
-          python3 -c '
-          import re, os
-          sha = os.environ["SHORT_SHA"]
-          with open("nginx-log-creator/deployment.yaml", "r") as f:
-              content = f.read()
-          new_content = re.sub(r"image: ghcr\.io/.*?/.*", f"image: ghcr.io/zcchnt/fleet-edge-apps:{sha}", content)
-          with open("nginx-log-creator/deployment.yaml", "w") as f:
-              f.write(new_content)
-          '
-          
-          git commit -am "Aggiorna immagine a $SHORT_SHA"
-          git push
-        env:
-          SHORT_SHA: ${{ github.sha }}
+      run: |
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+        
+        python3 -c '
+        import re, os
+        sha = os.environ["SHORT_SHA"]
+        with open("nginx-log-creator/deployment.yaml", "r") as f:
+            content = f.read()
+        new_content = re.sub(r"image: ghcr\.io/.*?/.*", f"image: ghcr.io/zcchnt/fleet-edge-apps:{sha}", content)
+        with open("nginx-log-creator/deployment.yaml", "w") as f:
+            f.write(new_content)
+        '
+        
+        git commit -am "Aggiorna immagine a $SHORT_SHA"
+        git push
+      env:
+        SHORT_SHA: ${{ steps.vars.outputs.SHORT_SHA }}
 
 
       - name: Build e Push dell'immagine
@@ -57,4 +58,6 @@ jobs:
           context: ./automatic-log       
           file: ./automatic-log/Dockerfile 
           push: true
-          tags: ghcr.io/zcchnt/fleet-edge-apps:${{ github.sha }}
+          tags: |
+            ghcr.io/zcchnt/fleet-edge-apps:${{ steps.vars.outputs.SHORT_SHA }}
+            ghcr.io/zcchnt/fleet-edge-apps:latest
