@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - main
+    paths:
+      - 'automatic-log/**'
+      - '.github/workflows/deploy.yml'
 
 jobs:
   build-and-push:
