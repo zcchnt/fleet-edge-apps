@@ -33,7 +33,7 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           
           python3 -c '
-          import re
+          import re, string
           long_sha = string(${{github.sha}})
           sha = long_sha[0,4]
           with open("nginx-log-creator/deployment.yaml", "r") as f:
