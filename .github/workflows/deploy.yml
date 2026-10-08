@@ -28,18 +28,18 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Aggiorna il file deployment.yaml con il nuovo SHA
-      run: |
-        # Configura l'identità Git del bot di GitHub Actions
-        git config --global user.name "github-actions[bot]"
-        git config --global user.email "github-actions[bot]@users.noreply.github.com"
-        
-        # Sostituisce il tag nel file deployment.yaml con lo SHA corrente del commit
-        # (Assicurati che il percorso del file e la ricerca dell'immagine corrispondano ai tuoi)
-        sed -i 's|image: ghcr.io/tuonome/tua-repo:.*|image: ghcr.io/tuonome/tua-repo:${{ github.sha }}|g' deployment.yaml
-        
-        # Registra la modifica, fa il commit e il push sul ramo main
-        git commit -am "Aggiorna immagine a ${{ github.sha }}"
-        git push
+        run: |
+          # Configura l'identità Git del bot di GitHub Actions
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          
+          # Sostituisce il tag nel file deployment.yaml con lo SHA corrente del commit
+          # (Assicurati che il percorso del file e la ricerca dell'immagine corrispondano ai tuoi)
+          sed -i 's|image: ghcr.io/tuonome/tua-repo:.*|image: ghcr.io/tuonome/tua-repo:${{ github.sha }}|g' deployment.yaml
+          
+          # Registra la modifica, fa il commit e il push sul ramo main
+          git commit -am "Aggiorna immagine a ${{ github.sha }}"
+          git push
 
 
       - name: Build e Push dell'immagine
