@@ -2,6 +2,34 @@ controller:
   type: daemonset
 
 alloy:
+  # 1. Permessi per leggere il disco fisico
+  securityContext:
+    runAsUser: 0
+    runAsGroup: 0
+
+  extraVolumes:
+    - name: varlogpods
+      hostPath:
+        path: /var/log/pods
+    - name: containerd
+      hostPath:
+        path: /var/lib/rancher/k3s/agent/containerd
+    # 2. Rendiamo il WAL persistente sul disco dell'Edge
+    - name: alloy-data-storage
+      hostPath:
+        path: /var/lib/alloy-data-edge
+        type: DirectoryOrCreate
+  
+  extraVolumeMounts:
+    - name: varlogpods
+      mountPath: /var/log/pods
+      readOnly: true
+    - name: containerd
+      mountPath: /var/lib/rancher/k3s/agent/containerd
+      readOnly: true
+    - name: alloy-data-storage
+      mountPath: /var/lib/alloy/data
+
   configMap:
     content: |-
       loki.write "default" {
@@ -14,33 +42,40 @@ alloy:
         }
       }
 
-      discovery.kubernetes "pods" {
-        role = "pod"
+      # 3. Lettura diretta dei file fisici, ignorando l'API instabile di K3s
+      local.file_match "node_logs" {
+        path_targets = [{"__path__" = "/var/log/pods/*/*/*.log"}]
       }
 
+      # 4. Estrazione etichette dai nomi delle cartelle
       discovery.relabel "pod_logs" {
-        targets = discovery.kubernetes.pods.targets
+        targets = local.file_match.node_logs.targets
         
+        rule {
+          source_labels = ["__path__"]
+          regex         = "/var/log/pods/([^_]+)_([^_]+)_([^/]+)/([^/]+)/.*\\.log"
+          target_label  = "namespace"
+          replacement   = "$1"
+        }
+        rule {
+          source_labels = ["__path__"]
+          regex         = "/var/log/pods/([^_]+)_([^_]+)_([^/]+)/([^/]+)/.*\\.log"
+          target_label  = "pod"
+          replacement   = "$2"
+        }
+        rule {
+          source_labels = ["__path__"]
+          regex         = "/var/log/pods/([^_]+)_([^_]+)_([^/]+)/([^/]+)/.*\\.log"
+          target_label  = "container"
+          replacement   = "$4"
+        }
         rule {
           target_label = "cluster"
           replacement  = "edge-poc"
         }
-        
-        rule {
-          source_labels = ["__meta_kubernetes_namespace"]
-          target_label  = "namespace"
-        }
-        rule {
-          source_labels = ["__meta_kubernetes_pod_name"]
-          target_label  = "pod"
-        }
-        rule {
-          source_labels = ["__meta_kubernetes_pod_container_name"]
-          target_label  = "container"
-        }
       }
 
-      loki.source.kubernetes "local_pods" {
+      loki.source.file "local_pods" {
         targets    = discovery.relabel.pod_logs.output
         forward_to = [loki.write.default.receiver]
       }
