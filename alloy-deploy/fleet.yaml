@@ -9,10 +9,9 @@ helm:
   valuesFiles:
     - values.yaml
 
-
 # Dico a Fleet dove installare questo pacchetto
 targetCustomizations:
   - name: edge
     clusterSelector:
       matchLabels:
-        type: edge # Installerà Alloy su tutti i cluster edge
+        type: edge
