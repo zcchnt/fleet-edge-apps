@@ -20,7 +20,7 @@ alloy:
         }
         wal {
           enabled = true
-          dir = "/var/lib/alloy/data/wal" # Aggiunto il percorso del disco fisico
+          dir = "/var/lib/alloy/data/wal" 
           max_segment_age = "24h"
         }
       }
