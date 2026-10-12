@@ -2,26 +2,11 @@ controller:
   type: daemonset
 
 alloy:
-  extraVolumes:
-    - name: wal-storage
-      hostPath:
-        path: /var/lib/alloy-wal
-        type: DirectoryOrCreate
-  
-  extraVolumeMounts:
-    - name: wal-storage
-      mountPath: /var/lib/alloy/data/wal
-
   configMap:
     content: |-
       loki.write "default" {
         endpoint {
           url = "http://loki.192.168.1.160.nip.io/loki/api/v1/push"
-        }
-        wal {
-          enabled = true
-          dir = "/var/lib/alloy/data/wal" 
-          max_segment_age = "24h"
         }
       }
 
