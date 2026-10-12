@@ -8,6 +8,10 @@ alloy:
         endpoint {
           url = "http://loki.192.168.1.160.nip.io/loki/api/v1/push"
         }
+        wal {
+          enabled = true
+          max_segment_age = "24h"
+        }
       }
 
       discovery.kubernetes "pods" {
