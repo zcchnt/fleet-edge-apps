@@ -42,12 +42,12 @@ alloy:
         }
       }
 
-      # 3. Lettura diretta dei file fisici, ignorando l'API instabile di K3s
+      // 3. Lettura diretta dei file fisici, ignorando l'API instabile di K3s
       local.file_match "node_logs" {
         path_targets = [{"__path__" = "/var/log/pods/*/*/*.log"}]
       }
 
-      # 4. Estrazione etichette dai nomi delle cartelle
+      // 4. Estrazione etichette dai nomi delle cartelle
       discovery.relabel "pod_logs" {
         targets = local.file_match.node_logs.targets
         
