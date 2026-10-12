@@ -2,16 +2,6 @@ controller:
   type: daemonset
 
 alloy:
-  extraVolumes:
-    - name: varlogpods
-      hostPath:
-        path: /var/log/pods
-  
-  extraVolumeMounts:
-    - name: varlogpods
-      mountPath: /var/log/pods
-      readOnly: true
-
   configMap:
     content: |-
       loki.write "default" {
@@ -24,41 +14,33 @@ alloy:
         }
       }
 
-      // 1. Ricerca pura dei file fisici, senza MAI contattare le API K8s
-      local.file_match "node_logs" {
-        path_targets = [{"__path__" = "/var/log/pods/*/*/*.log"}]
+      discovery.kubernetes "pods" {
+        role = "pod"
       }
 
-      // 2. Estrazione delle etichette (namespace, pod, container) usando Regex sul nome cartella
       discovery.relabel "pod_logs" {
-        targets = local.file_match.node_logs.targets
+        targets = discovery.kubernetes.pods.targets
         
-        rule {
-          source_labels = ["__path__"]
-          regex         = "/var/log/pods/([^_]+)_([^_]+)_([^/]+)/([^/]+)/.*\\.log"
-          target_label  = "namespace"
-          replacement   = "$1"
-        }
-        rule {
-          source_labels = ["__path__"]
-          regex         = "/var/log/pods/([^_]+)_([^_]+)_([^/]+)/([^/]+)/.*\\.log"
-          target_label  = "pod"
-          replacement   = "$2"
-        }
-        rule {
-          source_labels = ["__path__"]
-          regex         = "/var/log/pods/([^_]+)_([^_]+)_([^/]+)/([^/]+)/.*\\.log"
-          target_label  = "container"
-          replacement   = "$4"
-        }
         rule {
           target_label = "cluster"
           replacement  = "edge-poc"
         }
+        
+        rule {
+          source_labels = ["__meta_kubernetes_namespace"]
+          target_label  = "namespace"
+        }
+        rule {
+          source_labels = ["__meta_kubernetes_pod_name"]
+          target_label  = "pod"
+        }
+        rule {
+          source_labels = ["__meta_kubernetes_pod_container_name"]
+          target_label  = "container"
+        }
       }
 
-      // 3. Lettura diretta dal disco
-      loki.source.file "local_pods" {
+      loki.source.kubernetes "local_pods" {
         targets    = discovery.relabel.pod_logs.output
         forward_to = [loki.write.default.receiver]
       }
