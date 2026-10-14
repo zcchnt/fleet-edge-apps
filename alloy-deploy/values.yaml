@@ -23,7 +23,7 @@ alloy:
         
         rule {
           target_label = "cluster"
-          replacement  = ""{{ .Values.clusterName }}"
+          replacement  = "{{ .Values.clusterName }}"
         }
         
         rule {
