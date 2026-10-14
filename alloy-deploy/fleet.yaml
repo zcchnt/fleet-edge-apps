@@ -9,7 +9,7 @@ helm:
   valuesFiles:
     - values.yaml
   values:
-    clusterName: "${ .ClusterLabels.nome-cluster }"
+    clusterName: "${ index .ClusterLabels 'nome-cluster' }"
 
 # Dico a Fleet dove installare questo pacchetto
 targetCustomizations:
