@@ -23,7 +23,7 @@ alloy:
         
         rule {
           target_label = "cluster"
-          replacement  = "edge-poc"
+          replacement  = ""{{ .Values.clusterName }}"
         }
         
         rule {

@@ -8,6 +8,8 @@ helm:
   # Dico a Fleet di usare le nostre impostazioni
   valuesFiles:
     - values.yaml
+  values:
+    clusterName: "${ .ClusterName }"
 
 # Dico a Fleet dove installare questo pacchetto
 targetCustomizations:
