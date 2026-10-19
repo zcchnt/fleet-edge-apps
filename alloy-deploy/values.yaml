@@ -1,7 +1,17 @@
 controller:
   type: daemonset
+  volumes:
+    extra:
+      - name: wal-disk
+        hostPath:
+          path: /z_acquisitions/alloy-wal
+          type: DirectoryOrCreate
 
 alloy:
+  mounts:
+      extra:
+        - name: wal-disk
+          mountPath: /tmp/alloy
   configMap:
     content: |-
       loki.write "default" {
