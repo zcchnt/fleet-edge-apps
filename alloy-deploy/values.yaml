@@ -19,14 +19,12 @@ alloy:
       loki.write "default" {
         endpoint {
           url = "http://loki.zeit/loki/api/v1/push"
-          backoff_config {
-                max_retries = 300   
-                max_period  = "5m"  
-              }
+          max_backoff_retries = 0   
+          max_backoff_period  = "5m"
         }
         wal {
           enabled = true
-          max_segment_age = "24h"
+          max_segment_age = "48h"
         }
       }
 
