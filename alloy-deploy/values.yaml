@@ -8,6 +8,8 @@ controller:
           type: DirectoryOrCreate
 
 alloy:
+  extraArgs:
+    - --stability.level=experimental
   mounts:
       extra:
         - name: wal-disk
