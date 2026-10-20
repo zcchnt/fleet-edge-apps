@@ -24,7 +24,6 @@ alloy:
         }
         wal {
           enabled = true
-          truncate_frequency = "15m" 
           max_segment_age = "48h"
         }
       }
