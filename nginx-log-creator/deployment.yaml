@@ -15,4 +15,4 @@ spec:
     spec:
       containers:
       - name: log-creator
-        image: ghcr.io/zcchnt/fleet-edge-apps:2d44b51
+        image: ghcr.io/zcchnt/fleet-edge-apps:4e9b3a2
