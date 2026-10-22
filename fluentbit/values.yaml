@@ -1,0 +1,54 @@
+# 1. Montiamo il tuo SSD fisico dentro il container
+extraVolumes:
+  - name: z-acquisitions
+    hostPath:
+      path: /z_acquisitions/fluentbit-wal
+      type: DirectoryOrCreate
+
+extraVolumeMounts:
+  - name: z-acquisitions
+    mountPath: /z_acquisitions/fluentbit-wal
+
+config:
+  service: |
+    [SERVICE]
+        Flush         1
+        Log_Level     info
+        Daemon        off
+        Parsers_File  parsers.conf
+        storage.path  /z_acquisitions/fluentbit-wal
+        storage.sync  normal
+        storage.checksum off
+        storage.backlog.mem_limit 5M
+
+  inputs: |
+    [INPUT]
+        Name              tail
+        Path              /var/log/containers/*.log
+        multiline.parser  docker, cri
+        Tag               kube.*
+        Mem_Buf_Limit     5MB
+        Skip_Long_Lines   On
+        storage.type      filesystem
+
+  filters: |
+    [FILTER]
+        Name                kubernetes
+        Match               kube.*
+        Kube_URL            https://kubernetes.default.svc:443
+        Kube_CA_File        /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+        Kube_Token_File     /var/run/secrets/kubernetes.io/serviceaccount/token
+        Kube_Tag_Prefix     kube.var.log.containers.
+        Merge_Log           On
+        Merge_Log_Key       log_processed
+
+  outputs: |
+    [OUTPUT]
+        Name              loki
+        Match             kube.*
+        Host              loki.zeit
+        Port              3100
+        Labels            job=fluentbit
+        Remove_Keys       kubernetes, stream, time
+        Label_Keys        $kubernetes['namespace_name'], $kubernetes['pod_name'], $kubernetes['container_name']
+        Retry_Limit       False
