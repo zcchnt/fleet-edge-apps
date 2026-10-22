@@ -12,7 +12,7 @@ alloy:
     - --stability.level=experimental
   mounts:
     extra:
-      - name: perm-disk
+      - name: wal-disk
         mountPath: /var/lib/alloy/data
   configMap:
     content: |-
