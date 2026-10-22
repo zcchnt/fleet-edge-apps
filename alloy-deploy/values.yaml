@@ -11,9 +11,9 @@ alloy:
   extraArgs:
     - --stability.level=experimental
   mounts:
-      extra:
-        - name: wal-disk
-          mountPath: /tmp/alloy
+    extra:
+      - name: perm-disk
+        mountPath: /var/lib/alloy/data
   configMap:
     content: |-
       loki.write "default" {
