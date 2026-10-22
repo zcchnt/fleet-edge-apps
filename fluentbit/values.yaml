@@ -46,7 +46,7 @@ config:
     [OUTPUT]
         Name              loki
         Match             kube.*
-        Host              loki.zeit
+        Host              http://loki.zeit/loki/api/v1/push
         Port              3100
         Labels            job=fluentbit
         Remove_Keys       kubernetes, stream, time
