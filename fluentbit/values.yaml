@@ -47,7 +47,7 @@ config:
         Name              loki
         Match             kube.*
         Host              loki.zeit
-        Port              3100
+        Port              80
         Labels            job=fluentbit
         Remove_Keys       kubernetes, stream, time
         Label_Keys        $kubernetes['namespace_name'], $kubernetes['pod_name'], $kubernetes['container_name']
