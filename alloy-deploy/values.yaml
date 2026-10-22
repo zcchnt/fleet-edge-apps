@@ -13,7 +13,7 @@ alloy:
   mounts:
     extra:
       - name: wal-disk
-        mountPath: /var/lib/alloy/data
+        mountPath: /tmp/alloy
   configMap:
     content: |-
       loki.write "default" {
