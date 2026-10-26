@@ -44,6 +44,19 @@ config:
         Kube_Tag_Prefix     kube.var.log.containers.
         Merge_Log           On
         Merge_Log_Key       log_processed
+    
+    [FILTER]
+        Name                nest
+        Match               kube.*
+        Operation           lift
+        Nested_under        kubernetes
+
+    [FILTER]
+        Name                modify
+        Match               kube.*
+        Rename              namespace_name namespace
+        Rename              pod_name pod
+        Rename              container_name container
 
   outputs: |
     [OUTPUT]
@@ -54,4 +67,11 @@ config:
         Labels            job=fluentbit
         Remove_Keys       kubernetes, stream, time
         Label_Keys        $kubernetes['namespace_name'], $kubernetes['pod_name'], $kubernetes['container_name']
+        Retry_Limit       False
+
+        Labels            job=fluentbit-edge, cluster=nodo-edge-1
+        
+        Label_Keys        namespace, pod, container
+        
+        Remove_Keys       stream, time, namespace, pod, container
         Retry_Limit       False
