@@ -64,14 +64,8 @@ config:
         Match             kube.*
         Host              loki.zeit
         Port              80
-        Labels            job=fluentbit
-        Remove_Keys       kubernetes, stream, time
-        Label_Keys        $kubernetes['namespace_name'], $kubernetes['pod_name'], $kubernetes['container_name']
-        Retry_Limit       False
 
-        Labels            job=fluentbit-edge, cluster=nodo-edge-1
-        
+        Labels            job=fluentbit-edge, cluster=edge-due
         Label_Keys        namespace, pod, container
-        
         Remove_Keys       stream, time, namespace, pod, container
         Retry_Limit       False
