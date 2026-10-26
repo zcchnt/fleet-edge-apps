@@ -58,6 +58,14 @@ config:
         Rename              pod_name pod
         Rename              container_name container
 
+    [FILTER]
+        Name            record_modifier
+        Match           kube.*
+        Allowlist_key   log
+        Allowlist_key   namespace
+        Allowlist_key   pod
+        Allowlist_key   container
+
   outputs: |
     [OUTPUT]
         Name              loki
@@ -67,5 +75,6 @@ config:
 
         Labels            job=fluentbit-edge, cluster=edge-due
         Label_Keys        $namespace, $pod, $container
-        Remove_Keys       stream, time, namespace, pod, container
+        Remove_Keys       namespace, pod, container
+        drop_single_key   On
         Retry_Limit       False
