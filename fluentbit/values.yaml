@@ -66,6 +66,6 @@ config:
         Port              80
 
         Labels            job=fluentbit-edge, cluster=edge-due
-        Label_Keys        namespace, pod, container
+        Label_Keys        $namespace, $pod, $container
         Remove_Keys       stream, time, namespace, pod, container
         Retry_Limit       False
