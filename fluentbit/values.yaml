@@ -23,6 +23,8 @@ config:
         storage.sync  normal
         storage.checksum off
         storage.backlog.mem_limit 5M
+        scheduler.base 5
+        scheduler.cap  240
 
   inputs: |
     [INPUT]
