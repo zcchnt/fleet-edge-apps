@@ -78,3 +78,5 @@ config:
         Remove_Keys       namespace, pod, container
         drop_single_key   On
         Retry_Limit       False
+        net.connect_timeout 5
+        net.io_timeout      5
