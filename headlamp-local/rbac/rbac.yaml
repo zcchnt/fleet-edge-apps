@@ -5,8 +5,14 @@ metadata:
   name: headlamp-viewer-plus
 rules:
 # Aggiungi i permessi base di view (pod, deployment, log, ecc.)
-- apiGroups: ["", "apps", "batch", "extensions"]
-  resources: ["pods", "pods/log", "deployments", "replicasets", "statefulsets", "daemonsets", "jobs", "cronjobs", "services", "endpoints", "configmaps", "persistentvolumeclaims", "events"]
+- apiGroups: ["", "apps", "batch"]
+  resources: [
+    "pods", "pods/log", "deployments", 
+    "replicasets", "statefulsets", 
+    "daemonsets", "jobs", "cronjobs", 
+    "services", "endpoints", "configmaps", 
+    "persistentvolumeclaims", "events"
+  ]
   verbs: ["get", "list", "watch"]
 # Aggiungi il permesso speciale per leggere i NODI
 - apiGroups: [""]
