@@ -8,7 +8,6 @@ helm:
       create: true
     clusterRoleBinding:
       create: true
-      clusterRoleName: view
       
     service:
       type: NodePort

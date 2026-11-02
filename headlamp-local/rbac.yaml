@@ -1,0 +1,33 @@
+# 1. Crea il ruolo personalizzato "headlamp-viewer-plus"
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: headlamp-viewer-plus
+rules:
+# Aggiungi i permessi base di view (pod, deployment, log, ecc.)
+- apiGroups: ["", "apps", "batch", "extensions"]
+  resources: ["pods", "pods/log", "deployments", "replicasets", "statefulsets", "daemonsets", "jobs", "cronjobs", "services", "endpoints", "configmaps", "persistentvolumeclaims", "events"]
+  verbs: ["get", "list", "watch"]
+# Aggiungi il permesso speciale per leggere i NODI
+- apiGroups: [""]
+  resources: ["nodes"]
+  verbs: ["get", "list", "watch"]
+# Aggiungi il permesso speciale per leggere le METRICHE (CPU/RAM)
+- apiGroups: ["metrics.k8s.io"]
+  resources: ["pods", "nodes"]
+  verbs: ["get", "list", "watch"]
+
+---
+# 2. Collega questo ruolo al ServiceAccount creato da Helm
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: headlamp-viewer-plus-binding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: headlamp-viewer-plus
+subjects:
+- kind: ServiceAccount
+  name: headlamp # Questo è il nome predefinito creato dalla chart
+  namespace: headlamp
