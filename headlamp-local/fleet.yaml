@@ -1,6 +1,6 @@
 defaultNamespace: headlamp
 helm:
-  repo: https://headlamp-k8s.github.io/headlamp/
+  repo: https://kubernetes-sigs.github.io/headlamp/
   chart: headlamp
   releaseName: headlamp
   values:
