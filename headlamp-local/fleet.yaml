@@ -23,10 +23,10 @@ helm:
         - "-kubeconfig=/mnt/kubeconfig"
 
     # 4. Monta fisicamente il ConfigMap nel container
-    extraVolumes:
+    volumes:
       - name: bypass-volume
         configMap:
           name: headlamp-bypass-config
-    extraVolumeMounts:
+    volumeMounts:
       - name: bypass-volume
         mountPath: /mnt
