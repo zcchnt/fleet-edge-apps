@@ -4,29 +4,16 @@ helm:
   chart: headlamp
   releaseName: headlamp
   values:
-    # 1. Assegna i privilegi massimi (Admin) al ServiceAccount del Pod
     serviceAccount:
       create: true
     clusterRoleBinding:
       create: true
       clusterRoleName: view
-
-    # 2. Esponi il servizio sull'IP Wi-Fi Edge
+      
     service:
       type: NodePort
       nodePort: 32000
 
-    # 3. Forza Headlamp a usare il kubeconfig per saltare il login
     config:
-      inCluster: false
-      extraArgs:
-        - "-kubeconfig=/mnt/kubeconfig"
-
-    # 4. Monta fisicamente il ConfigMap nel container
-    volumes:
-      - name: bypass-volume
-        configMap:
-          name: headlamp-bypass-config
-    volumeMounts:
-      - name: bypass-volume
-        mountPath: /mnt
+      inCluster: true
+      unsafeUseServiceAccountToken: true
