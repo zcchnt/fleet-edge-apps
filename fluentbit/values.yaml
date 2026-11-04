@@ -22,7 +22,7 @@ config:
         storage.path  /z_acquisitions/fluentbit-wal
         storage.sync  normal
         storage.checksum off
-        storage.backlog.mem_limit 5M
+        storage.backlog.mem_limit 256K
         scheduler.base 5
         scheduler.cap  240
 
@@ -74,11 +74,12 @@ config:
         Match             kube.*
         Host              loki.zeit
         Port              80
+        Workers           1
 
         Labels            job=fluentbit-edge, cluster=edge-due
         Label_Keys        $namespace, $pod, $container
         Remove_Keys       namespace, pod, container
         drop_single_key   On
         Retry_Limit       False
-        net.connect_timeout 5
-        net.io_timeout      5
+        net.connect_timeout 10
+        net.io_timeout      300
