@@ -11,7 +11,7 @@ helm:
       
     service:
       type: NodePort
-      nodePort: 32000
+      nodePort: 32001
 
     config:
       inCluster: true
